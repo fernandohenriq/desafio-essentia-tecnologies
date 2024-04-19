@@ -32,7 +32,7 @@ export class ExpressApp {
         const userRepo = new TypeOrmTodoRepository();
         const userResult = Todo.create(req.body);
         if (userResult.isFailure) {
-          next(userResult.error);
+          return next(userResult.error);
         }
         const user = userResult.value;
         const userSaved = await userRepo.save(user);
@@ -40,11 +40,12 @@ export class ExpressApp {
       } catch (error) {
         next(error);
       }
+      return;
     });
 
     this.app.use((err: any, req: Request, res: Response, next: NextFunction) => {
       if (err instanceof AppError) {
-        res.status(err?.statusCode ?? 500).send({
+        return res.status(err?.statusCode ?? 500).send({
           message: err.message,
           details: err?.details,
         });
@@ -53,8 +54,7 @@ export class ExpressApp {
         message: err.message,
         details: err,
       };
-      console.error('[ERROR]', error);
-      res.status(500).send(error);
+      return res.status(500).send(error);
     });
 
     this.app.use(async (req, res) => {
