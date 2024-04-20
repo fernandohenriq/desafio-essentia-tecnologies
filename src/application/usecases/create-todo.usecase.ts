@@ -4,9 +4,7 @@ import { AppError } from '../../utils/app-error';
 import { Result } from '../../utils/result';
 
 export namespace CreateTodoUseCase {
-  export type Input = {
-    title: string;
-  };
+  export type Input = Todo.CreateTodoProps;
 }
 
 export class CreateTodoUseCase {

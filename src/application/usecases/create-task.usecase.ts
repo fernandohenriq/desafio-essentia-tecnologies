@@ -4,11 +4,7 @@ import { AppError } from '../../utils/app-error';
 import { Result } from '../../utils/result';
 
 export namespace CreateTaskUseCase {
-  export type Input = {
-    title: string;
-    description: string;
-    todoId: string;
-  };
+  export type Input = Task.CreateTaskProps;
 }
 
 export class CreateTaskUseCase {
