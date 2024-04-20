@@ -13,11 +13,35 @@ describe('Todo entity', () => {
   });
 
   test('Should not be able to create a new todo with invalid data', async () => {
-    const todo = Todo.create({ title: '' }).error;
+    const error = Todo.create({ title: '' }).error;
 
-    expect(todo).toBeInstanceOf(UnprocessableEntityError);
-    expect(todo.message).toBe('Invalid todo data');
-    expect(todo.details).toEqual([
+    expect(error).toBeInstanceOf(UnprocessableEntityError);
+    expect(error.message).toBe('Invalid todo data');
+    expect(error.details).toEqual([
+      {
+        field: 'title',
+        message: "Todo title can't be empty",
+      },
+    ]);
+  });
+
+  test('Should be able to update a todo', async () => {
+    const todo = Todo.create({ title: 'Todo 1' }).value;
+    const todoUpdated = todo.update({ title: 'Todo 1 updated' }).value;
+
+    expect(todoUpdated).toBeInstanceOf(Todo);
+    expect(todoUpdated.id).toEqual(todo.id);
+    expect(todoUpdated.title).toBe('Todo 1 updated');
+    expect(todoUpdated.updatedAt).toBeTruthy();
+  });
+
+  test('Should not be able to update a todo with invalid data', async () => {
+    const todo = Todo.create({ title: 'Todo 1' }).value;
+    const error = todo.update({ title: '' }).error;
+
+    expect(error).toBeInstanceOf(UnprocessableEntityError);
+    expect(error.message).toBe('Invalid todo data');
+    expect(error.details).toEqual([
       {
         field: 'title',
         message: "Todo title can't be empty",
