@@ -24,10 +24,15 @@ const createTodoSchema = z.object({
       invalid_type_error: 'Task completed field must be a boolean',
     })
     .optional(),
+  todoId: z
+    .string({
+      invalid_type_error: 'Task todoId must be a string',
+    })
+    .uuid({ message: 'Invalid todoId' }),
 });
 
 export type CreateTodoProps = z.infer<typeof createTodoSchema> & {
-  todo: Todo;
+  todo?: Todo;
 };
 
 @Entity('tasks')
@@ -45,6 +50,9 @@ export class Task {
   completed: boolean;
 
   @Column('text')
+  todoId: string;
+
+  @Column('text')
   createdAt: Date;
 
   @Column('datetime', { nullable: true })
@@ -52,7 +60,7 @@ export class Task {
 
   @ManyToOne((type) => Todo, (todo) => todo.tasks, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'todoId' })
-  todo: Todo;
+  todo?: Todo;
 
   constructor(props: PropsOf<Task>) {
     Object.assign(this, props);
@@ -74,6 +82,7 @@ export class Task {
         title: data.title,
         description: data.description,
         completed: data.completed ?? false,
+        todoId: data.todoId,
         createdAt: new Date(),
         updatedAt: null,
         todo: props.todo,
