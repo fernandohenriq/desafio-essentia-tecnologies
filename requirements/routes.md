@@ -31,7 +31,7 @@
 
 ### 4. **Update an existing todo:**
 
-- Method: `PUT`
+- Method: `PATCH`
 - Route: `/todos/:todoId`
 - Example: `/todos/123`
 - Request body:
@@ -87,7 +87,7 @@
 
 ### 4. **Update an existing task in a todo:**
 
-- Method: `PUT`
+- Method: `PATCH`
 - Route: `/todos/:todoId/tasks/:taskId`
 - Example: `/todos/123/tasks/456`
 - Request body:
