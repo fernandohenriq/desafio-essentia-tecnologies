@@ -1,9 +1,9 @@
 import express, { NextFunction, Request, Response } from 'express';
 
-import { TypeOrmTodoRepository } from '../database/typeorm/repositories/typeorm-todo.repository';
 import { TypeormManager } from '../database/typeorm/typeorm-singleton';
-import { Todo } from '../domain/entities/todo.entity';
 import { AppError } from '../utils/app-error';
+import { taskRoutes } from './routes/task.routes';
+import { todoRoutes } from './routes/todo.routes';
 
 const typeormManager = new TypeormManager();
 
@@ -21,28 +21,21 @@ export class ExpressApp {
   }
 
   private async initialize() {
+    // Initialize database
     await typeormManager.initialize();
 
+    // Seed database
+    typeormManager.seed({});
+
+    // Add routes
     this.app.options('/', async (req, res) => {
       res.status(200).send('Hello, World!');
     });
 
-    this.app.post('/todos', async (req, res, next) => {
-      try {
-        const userRepo = new TypeOrmTodoRepository();
-        const userResult = Todo.create(req.body);
-        if (userResult.isFailure) {
-          return next(userResult.error);
-        }
-        const user = userResult.value;
-        const userSaved = await userRepo.save(user);
-        res.status(201).send(userSaved);
-      } catch (error) {
-        next(error);
-      }
-      return;
-    });
+    this.app.use(todoRoutes);
+    this.app.use(taskRoutes);
 
+    // Error handling
     this.app.use((err: any, req: Request, res: Response, next: NextFunction) => {
       if (err instanceof AppError) {
         return res.status(err?.statusCode ?? 500).send({
@@ -57,6 +50,7 @@ export class ExpressApp {
       return res.status(500).send(error);
     });
 
+    // Route not found
     this.app.use(async (req, res) => {
       res.status(404).send('Route not found');
     });
