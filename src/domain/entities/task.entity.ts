@@ -10,6 +10,7 @@ const createTodoSchema = z.object({
   title: z
     .string({
       invalid_type_error: 'Task title must be a string',
+      required_error: 'Task title is required',
     })
     .min(1, "Task title can't be empty")
     .max(50, "Task title can't be longer than 50 characters"),
@@ -27,13 +28,19 @@ const createTodoSchema = z.object({
   todoId: z
     .string({
       invalid_type_error: 'Task todoId must be a string',
+      required_error: 'Task todoId is required',
     })
     .uuid({ message: 'Invalid todoId' }),
 });
 
-export type CreateTodoProps = z.infer<typeof createTodoSchema> & {
-  todo?: Todo;
-};
+const UpdateTodoSchema = createTodoSchema.omit({ todoId: true }).partial();
+
+export namespace Task {
+  export type CreateTaskProps = z.infer<typeof createTodoSchema> & {
+    todo?: Todo;
+  };
+  export type UpdateTaskProps = z.infer<typeof UpdateTodoSchema>;
+}
 
 @Entity('tasks')
 export class Task {
@@ -66,7 +73,30 @@ export class Task {
     Object.assign(this, props);
   }
 
-  static create(props: CreateTodoProps): Result<Task, UnprocessableEntityError> {
+  update(props: Task.UpdateTaskProps): Result<Task, UnprocessableEntityError> {
+    const result = UpdateTodoSchema.safeParse(props);
+    if (!result.success) {
+      const errors = result.error.errors.map((err) => ({
+        field: err.path.join('.'),
+        message: err.message,
+      }));
+      return Result.failure(new UnprocessableEntityError('Invalid task data', errors));
+    }
+    const data = result.data;
+    return Result.success(
+      new Task({
+        id: this.id,
+        title: data.title ?? this.title,
+        description: data.description ?? this.description,
+        completed: data.completed ?? this.completed,
+        todoId: this.todoId,
+        createdAt: this.createdAt,
+        updatedAt: new Date(),
+      }),
+    );
+  }
+
+  static create(props: Task.CreateTaskProps): Result<Task, UnprocessableEntityError> {
     const result = createTodoSchema.safeParse(props);
     if (!result.success) {
       const errors = result.error.errors.map((err) => ({

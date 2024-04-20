@@ -7,10 +7,21 @@ import { Result } from '../../utils/result';
 import { Task } from './task.entity';
 
 const createTodoSchema = z.object({
-  title: z.string().min(1, "Todo title can't be empty"),
+  title: z
+    .string({
+      invalid_type_error: 'Todo title must be a string',
+      required_error: 'Todo title is required',
+    })
+    .min(1, "Todo title can't be empty")
+    .max(50, "Todo title can't be longer than 50 characters"),
 });
 
-export type CreateTodoProps = z.infer<typeof createTodoSchema> & {};
+const UpdateTodoSchema = createTodoSchema.partial();
+
+export namespace Todo {
+  export type CreateTodoProps = z.infer<typeof createTodoSchema> & {};
+  export type UpdateTodoProps = z.infer<typeof UpdateTodoSchema> & {};
+}
 
 @Entity('todos')
 export class Todo {
@@ -34,9 +45,28 @@ export class Todo {
     Object.assign(this, props);
   }
 
-  static create(
-    props: Omit<PropsOf<Todo>, 'id' | 'createdAt' | 'updatedAt' | 'tasks'>,
-  ): Result<Todo, UnprocessableEntityError> {
+  update(props: Todo.UpdateTodoProps): Result<Todo, UnprocessableEntityError> {
+    const result = UpdateTodoSchema.safeParse(props);
+    if (!result.success) {
+      const errors = result.error.errors.map((err) => ({
+        field: err.path.join('.'),
+        message: err.message,
+      }));
+      return Result.failure(new UnprocessableEntityError('Invalid todo data', errors));
+    }
+    const data = result.data;
+    return Result.success(
+      new Todo({
+        id: this.id,
+        title: data.title ?? this.title,
+        createdAt: this.createdAt,
+        updatedAt: new Date(),
+        tasks: this.tasks,
+      }),
+    );
+  }
+
+  static create(props: Todo.CreateTodoProps): Result<Todo, UnprocessableEntityError> {
     const result = createTodoSchema.safeParse(props);
     if (!result.success) {
       const errors = result.error.errors.map((err) => ({
