@@ -1,9 +1,10 @@
 import { randomUUID } from 'crypto';
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { z } from 'zod';
 
 import { UnprocessableEntityError } from '../../utils/app-error';
 import { Result } from '../../utils/result';
+import { Todo } from './todo.entity';
 
 const createTodoSchema = z.object({
   title: z
@@ -25,7 +26,9 @@ const createTodoSchema = z.object({
     .optional(),
 });
 
-export type CreateTodoProps = z.infer<typeof createTodoSchema> & {};
+export type CreateTodoProps = z.infer<typeof createTodoSchema> & {
+  todo: Todo;
+};
 
 @Entity('tasks')
 export class Task {
@@ -47,7 +50,11 @@ export class Task {
   @Column('datetime', { nullable: true })
   updatedAt: Date | null;
 
-  constructor(props: PartialOf<PropsOf<Task>, 'id' | 'completed' | 'createdAt' | 'updatedAt'>) {
+  @ManyToOne((type) => Todo, (todo) => todo.tasks, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'todoId' })
+  todo: Todo;
+
+  constructor(props: PropsOf<Task>) {
     Object.assign(this, props);
   }
 
@@ -69,6 +76,7 @@ export class Task {
         completed: data.completed ?? false,
         createdAt: new Date(),
         updatedAt: null,
+        todo: props.todo,
       }),
     );
   }

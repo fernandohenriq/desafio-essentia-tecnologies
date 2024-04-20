@@ -1,9 +1,10 @@
 import { randomUUID } from 'crypto';
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, PrimaryColumn } from 'typeorm';
 import { z } from 'zod';
 
 import { UnprocessableEntityError } from '../../utils/app-error';
 import { Result } from '../../utils/result';
+import { Task } from './task.entity';
 
 const createTodoSchema = z.object({
   title: z.string().min(1, "Todo title can't be empty"),
@@ -25,12 +26,16 @@ export class Todo {
   @Column('datetime', { nullable: true })
   updatedAt?: Date | null;
 
+  @OneToMany((Type) => Task, (task) => task.todo, { onDelete: 'CASCADE' })
+  @JoinColumn()
+  tasks: Task[];
+
   constructor(props: PropsOf<Todo>) {
     Object.assign(this, props);
   }
 
   static create(
-    props: Omit<PropsOf<Todo>, 'id' | 'createdAt' | 'updatedAt'>,
+    props: Omit<PropsOf<Todo>, 'id' | 'createdAt' | 'updatedAt' | 'tasks'>,
   ): Result<Todo, UnprocessableEntityError> {
     const result = createTodoSchema.safeParse(props);
     if (!result.success) {
@@ -47,6 +52,7 @@ export class Todo {
         title: data.title,
         createdAt: new Date(),
         updatedAt: null,
+        tasks: [],
       }),
     );
   }
