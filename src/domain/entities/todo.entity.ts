@@ -41,8 +41,11 @@ export class Todo {
   @JoinColumn()
   tasks: Task[];
 
-  constructor(props: PropsOf<Todo>) {
-    Object.assign(this, props);
+  constructor(props: PartialOf<PropsOf<Todo>, 'tasks'>) {
+    Object.assign(this, {
+      ...props,
+      tasks: props.tasks ?? [],
+    });
   }
 
   update(props: Todo.UpdateTodoProps): Result<Todo, UnprocessableEntityError> {
