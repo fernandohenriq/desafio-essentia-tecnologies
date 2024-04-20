@@ -39,13 +39,18 @@ export class Todo {
 
   @OneToMany((Type) => Task, (task) => task.todo, { onDelete: 'CASCADE' })
   @JoinColumn()
-  tasks: Task[];
+  private _tasks?: Task[];
+
+  get tasks() {
+    return this._tasks ?? [];
+  }
+
+  set tasks(tasks: Task[]) {
+    this._tasks = tasks;
+  }
 
   constructor(props: PartialOf<PropsOf<Todo>, 'tasks'>) {
-    Object.assign(this, {
-      ...props,
-      tasks: props.tasks ?? [],
-    });
+    Object.assign(this, props);
   }
 
   update(props: Todo.UpdateTodoProps): Result<Todo, UnprocessableEntityError> {
