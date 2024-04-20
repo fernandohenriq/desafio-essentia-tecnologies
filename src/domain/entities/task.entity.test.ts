@@ -6,6 +6,7 @@ describe('Task entity', () => {
     const task = Task.create({
       title: 'Task 1',
       description: 'Task 1 description',
+      todoId: 'ad2e9529-80a5-4d29-a7e7-12f7297957e1',
     }).value;
 
     expect(task).toBeTruthy();
@@ -19,6 +20,7 @@ describe('Task entity', () => {
     const task = Task.create({
       title: '',
       description: 'Task 1 description',
+      todoId: 'ad2e9529-80a5-4d29-a7e7-12f7297957e1',
     }).error;
 
     expect(task).toBeInstanceOf(UnprocessableEntityError);
