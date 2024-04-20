@@ -1,6 +1,4 @@
 import { Todo } from '../entities/todo.entity';
+import { DefaultRepository } from './default.repository';
 
-export interface TodoRepository {
-  save(entity: Todo): Promise<Todo>;
-  findById(id: string): Promise<Todo | null>;
-}
+export interface TodoRepository extends DefaultRepository<Todo> {}
