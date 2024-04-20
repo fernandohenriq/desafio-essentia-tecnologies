@@ -18,10 +18,10 @@ export global {
 
   type httpRequest<T = unknown> = {
     auth?: T
-    body?: any
-    query?: object
-    params?: object
-    headers?: object
+    body: any
+    query: Record<string, any>
+    params: Record<string, any>
+    headers: Record<string, any>
   }
 
   type httpResponse<T = unknown> = {
@@ -29,5 +29,7 @@ export global {
     send: <T = unknown>(body: T) => void
   }
 
-  type HttpHandler = (request: httpRequest, response: httpResponse) => Promise<void>
+  type HttpNext = (err?: any) => void
+
+  type HttpHandler = ((request: httpRequest, response: httpResponse) => Promise<void>) | ((request: httpRequest, response: httpResponse, next: HttpNext) => Promise<void>)
 }
