@@ -53,7 +53,7 @@ export class Task {
   @Column('text')
   description: string;
 
-  @Column('text')
+  @Column('boolean')
   completed: boolean;
 
   @Column('text')
