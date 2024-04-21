@@ -20,7 +20,11 @@ export class ExpressApp {
     });
   }
 
-  private async initialize() {
+  get server() {
+    return this.app;
+  }
+
+  async initialize() {
     // Initialize database
     await typeormManager.initialize();
 
