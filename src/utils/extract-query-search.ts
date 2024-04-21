@@ -42,10 +42,6 @@ function parseWhere(input: unknown): Record<string, any> {
           where[key] = Number(value);
           continue;
         }
-        if (!isNaN(Date.parse(value))) {
-          where[key] = new Date(value).toISOString();
-          continue;
-        }
         if (value.toLowerCase() === 'true' || value.toLowerCase() === 'false') {
           where[key] = Boolean(value);
           continue;

@@ -27,7 +27,7 @@ describe('Extract Search', () => {
       completed: true,
       year: 2024,
       day: 10,
-      date: new Date('2024-10-10').toISOString(),
+      date: '2024-10-10',
       title: 'title',
       age: 18,
     });
