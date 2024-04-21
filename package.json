@@ -19,6 +19,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
+    "mysql": "^2.18.1",
     "reflect-metadata": "^0.2.2",
     "supertest": "^6.3.4",
     "typeorm": "^0.3.20",
