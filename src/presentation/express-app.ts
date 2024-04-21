@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 
+import { seedData } from '../database/seed-data';
 import { TypeormManager } from '../database/typeorm/typeorm-singleton';
 import { AppError } from '../utils/app-error';
 import { taskRoutes } from './routes/task.routes';
@@ -24,12 +25,16 @@ export class ExpressApp {
     return this.app;
   }
 
+  get seed() {
+    return typeormManager.seed;
+  }
+
   async initialize() {
     // Initialize database
     await typeormManager.initialize();
 
     // Seed database
-    typeormManager.seed({});
+    this.seed(seedData);
 
     // Add routes
     this.app.options('/', async (req, res) => {
