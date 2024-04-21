@@ -54,7 +54,7 @@ describe('Todo E2E', () => {
       });
     });
 
-    test('/todos?title=Todo 1', async () => {
+    test('/?title=Todo 1', async () => {
       const response = await client.get('/todos?title=Todo 1');
 
       expect(response.status).toBe(200);
@@ -71,7 +71,7 @@ describe('Todo E2E', () => {
       });
     });
 
-    test('/todos?title=Todo 123', async () => {
+    test('/?title=Todo 123', async () => {
       const response = await client.get('/todos?title=Todo 123');
 
       expect(response.status).toBe(200);
@@ -79,7 +79,7 @@ describe('Todo E2E', () => {
       expect(response.body.todos.length).toBe(0);
     });
 
-    test('/todos?page=1&limit=10', async () => {
+    test('/?page=1&limit=10', async () => {
       const response = await client.get('/todos?page=1&limit=10');
 
       expect(response.status).toBe(200);
