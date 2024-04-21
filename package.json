@@ -9,6 +9,8 @@
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "start": "node dist/src/index.js",
     "test": "jest --watchAll --config ./jest.config.js --passWithNoTests --logHeapUsage",
+    "test:unit": "jest --watchAll --config ./jest.unit.config.js --passWithNoTests --logHeapUsage",
+    "test:e2e": "jest --watchAll --config ./jest.e2e.config.js --passWithNoTests --logHeapUsage",
     "build": "tsc && tsc-alias"
   },
   "dependencies": {
