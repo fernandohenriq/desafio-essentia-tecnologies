@@ -1,4 +1,6 @@
 import { FindManyTasksUsecase } from '../../application/usecases/find-many-tasks.usecase';
+import { Task } from '../../domain/entities/task.entity';
+import { extractQuerySearch } from '../../utils/extract-query-search';
 
 export class IndexTaskController {
   constructor(private readonly findManyTaskUsecase: FindManyTasksUsecase) {}
@@ -6,14 +8,9 @@ export class IndexTaskController {
   handle: HttpHandler = async (req, res, next) => {
     try {
       const todoId = req?.params?.todoId;
-      const queries = req?.query ?? {};
-      const tasksResult = await this.findManyTaskUsecase.execute({
-        ...queries,
-        where: {
-          ...(queries?.where ?? {}),
-          todoId,
-        },
-      });
+      req.query.todoId = todoId;
+      const search: Search<Task> = extractQuerySearch(req.query);
+      const tasksResult = await this.findManyTaskUsecase.execute(search);
       if (tasksResult.isFailure) throw tasksResult.error;
       const tasks = tasksResult.value;
       res.status(200).send({
