@@ -22,17 +22,12 @@ export class TypeOrmTodoRepository implements TodoRepository {
 
   async findMany(search: Search<Todo>): Promise<Todo[]> {
     const { page = 1, limit = 10, orderBy = 'createdAt', sort = 'desc', where = {} } = search ?? {};
-    const query = this.repo
-      .createQueryBuilder('todo')
-      .skip((page - 1) * limit)
-      .take(limit)
-      .orderBy(`todo.${orderBy}`, sort.toUpperCase() as 'ASC' | 'DESC');
-    if (Object.keys(where).length > 0) {
-      for (const [key, value] of Object.entries(where)) {
-        query.andWhere(`todo.${key} = :${key}`, { [key]: value });
-      }
-    }
-    const todos = await query.getMany();
+    const todos = await this.repo.find({
+      skip: (page - 1) * limit,
+      take: limit,
+      order: { [orderBy]: sort },
+      where: where,
+    });
     return todos;
   }
 
