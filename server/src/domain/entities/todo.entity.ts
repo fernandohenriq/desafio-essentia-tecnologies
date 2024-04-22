@@ -13,6 +13,13 @@ const createTodoSchema = z.object({
     })
     .min(1, "Todo title can't be empty")
     .max(50, "Todo title can't be longer than 50 characters"),
+  isCompleted: z
+    .boolean({
+      invalid_type_error: 'Todo isCompleted must be a boolean',
+      required_error: 'Todo isCompleted is required',
+    })
+    .default(false)
+    .optional(),
 });
 
 const UpdateTodoSchema = createTodoSchema.partial();
@@ -29,6 +36,9 @@ export class Todo {
 
   @Column('text')
   title: string;
+
+  @Column('boolean')
+  isCompleted: boolean;
 
   @Column('datetime')
   createdAt: Date;
@@ -54,6 +64,7 @@ export class Todo {
       new Todo({
         id: this.id,
         title: data.title ?? this.title,
+        isCompleted: !!this.isCompleted,
         createdAt: this.createdAt,
         updatedAt: new Date(),
       }),
@@ -74,6 +85,7 @@ export class Todo {
       new Todo({
         id: randomUUID(),
         title: data.title,
+        isCompleted: !!data.isCompleted,
         createdAt: new Date(),
         updatedAt: null,
       }),
