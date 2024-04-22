@@ -8,6 +8,7 @@ describe('Todo entity', () => {
     expect(todo).toBeTruthy();
     expect(todo.id).toBeTruthy();
     expect(todo.title).toBe('Todo 1');
+    expect(todo.isCompleted).toBe(false);
     expect(todo.createdAt).toBeTruthy();
     expect(todo.updatedAt).toBeNull();
   });
@@ -27,17 +28,23 @@ describe('Todo entity', () => {
 
   test('Should be able to update a todo', async () => {
     const todo = Todo.create({ title: 'Todo 1' }).value;
-    const todoUpdated = todo.update({ title: 'Todo 1 updated' }).value;
+
+    const todoUpdated = todo.update({
+      title: 'Todo 1 updated',
+      isCompleted: true,
+    }).value;
 
     expect(todoUpdated).toBeInstanceOf(Todo);
     expect(todoUpdated.id).toEqual(todo.id);
     expect(todoUpdated.title).toBe('Todo 1 updated');
+    expect(todoUpdated.isCompleted).toBe(true);
+    expect(todoUpdated.createdAt).toBeTruthy();
     expect(todoUpdated.updatedAt).toBeTruthy();
   });
 
   test('Should not be able to update a todo with invalid data', async () => {
     const todo = Todo.create({ title: 'Todo 1' }).value;
-    const error = todo.update({ title: '' }).error;
+    const error = todo.update({ title: '', isCompleted: true }).error;
 
     expect(error).toBeInstanceOf(UnprocessableEntityError);
     expect(error.message).toBe('Invalid todo data');

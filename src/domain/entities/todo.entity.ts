@@ -25,7 +25,7 @@ const createTodoSchema = z.object({
 const UpdateTodoSchema = createTodoSchema.partial();
 
 export namespace Todo {
-  export type CreateTodoProps = z.infer<typeof createTodoSchema> & {};
+  export type CreateTodoProps = Omit<z.infer<typeof createTodoSchema>, 'isCompleted'>;
   export type UpdateTodoProps = z.infer<typeof UpdateTodoSchema> & {};
 }
 
@@ -64,7 +64,7 @@ export class Todo {
       new Todo({
         id: this.id,
         title: data.title ?? this.title,
-        isCompleted: !!this.isCompleted,
+        isCompleted: !!data?.isCompleted,
         createdAt: this.createdAt,
         updatedAt: new Date(),
       }),
@@ -85,7 +85,7 @@ export class Todo {
       new Todo({
         id: randomUUID(),
         title: data.title,
-        isCompleted: !!data.isCompleted,
+        isCompleted: !!data?.isCompleted,
         createdAt: new Date(),
         updatedAt: null,
       }),

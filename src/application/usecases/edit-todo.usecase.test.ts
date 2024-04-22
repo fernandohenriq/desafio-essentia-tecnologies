@@ -29,6 +29,7 @@ describe('EditTodoUsecase', () => {
         {
           id: todoId,
           title: 'Todo 1',
+          isCompleted: false,
           createdAt: new Date(),
           updatedAt: null,
         },
@@ -41,6 +42,7 @@ describe('EditTodoUsecase', () => {
       todoId,
       data: {
         title: 'Todo 1 updated',
+        isCompleted: true,
       },
     };
 
@@ -49,6 +51,8 @@ describe('EditTodoUsecase', () => {
     expect(todoUpdated).toBeInstanceOf(Todo);
     expect(todoUpdated.id).toEqual(todoId);
     expect(todoUpdated.title).toBe('Todo 1 updated');
+    expect(todoUpdated.isCompleted).toBe(true);
+    expect(todoUpdated.createdAt).toBeTruthy();
     expect(todoUpdated.updatedAt).toBeTruthy();
   });
 
@@ -57,6 +61,7 @@ describe('EditTodoUsecase', () => {
       todoId: 'non-existing-todo-id',
       data: {
         title: 'Todo 1 updated',
+        isCompleted: true,
       },
     };
 
@@ -71,6 +76,7 @@ describe('EditTodoUsecase', () => {
       todoId,
       data: {
         title: '',
+        isCompleted: null as any,
       },
     };
 
