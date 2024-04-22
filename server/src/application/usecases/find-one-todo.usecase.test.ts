@@ -33,7 +33,7 @@ describe('FindOneTodoUsecase', () => {
     };
   });
 
-  test('Should be able to find a task', async () => {
+  test('Should be able to find a todo', async () => {
     const input: FindOneTodoUsecase.Input = {
       todoId,
     };
@@ -44,7 +44,7 @@ describe('FindOneTodoUsecase', () => {
     expect(todoFound.id).toEqual(todoId);
   });
 
-  test('Should not be able to find a task with non-existing id', async () => {
+  test('Should not be able to find a todo with non-existing id', async () => {
     const input: FindOneTodoUsecase.Input = {
       todoId: 'non-existing-id',
     };

@@ -3,7 +3,6 @@ import express, { NextFunction, Request, Response } from 'express';
 import { seedData } from '../database/seed-data';
 import { TypeormManager } from '../database/typeorm/typeorm-singleton';
 import { AppError } from '../utils/app-error';
-import { taskRoutes } from './routes/task.routes';
 import { todoRoutes } from './routes/todo.routes';
 
 const typeormManager = new TypeormManager();
@@ -36,13 +35,13 @@ export class ExpressApp {
     // Seed database
     this.seed(seedData);
 
-    // Add routes
+    // Default route
     this.app.options('/', async (req, res) => {
       res.status(200).send('Hello, World!');
     });
 
+    // Add routes
     this.app.use(todoRoutes);
-    this.app.use(taskRoutes);
 
     // Error handling
     this.app.use((err: any, req: Request, res: Response, next: NextFunction) => {

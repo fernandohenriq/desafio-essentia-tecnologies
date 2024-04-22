@@ -4,7 +4,6 @@ import { z } from 'zod';
 
 import { UnprocessableEntityError } from '../../utils/app-error';
 import { Result } from '../../utils/result';
-import { Task } from './task.entity';
 
 const createTodoSchema = z.object({
   title: z
@@ -37,19 +36,7 @@ export class Todo {
   @Column('datetime', { nullable: true })
   updatedAt?: Date | null;
 
-  @OneToMany((Type) => Task, (task) => task.todo, { onDelete: 'CASCADE' })
-  @JoinColumn()
-  private _tasks?: Task[];
-
-  get tasks() {
-    return this._tasks ?? [];
-  }
-
-  set tasks(tasks: Task[]) {
-    this._tasks = tasks;
-  }
-
-  constructor(props: PartialOf<PropsOf<Todo>, 'tasks'>) {
+  constructor(props: PropsOf<Todo>) {
     Object.assign(this, props);
   }
 
@@ -69,7 +56,6 @@ export class Todo {
         title: data.title ?? this.title,
         createdAt: this.createdAt,
         updatedAt: new Date(),
-        tasks: this.tasks,
       }),
     );
   }
@@ -90,7 +76,6 @@ export class Todo {
         title: data.title,
         createdAt: new Date(),
         updatedAt: null,
-        tasks: [],
       }),
     );
   }
