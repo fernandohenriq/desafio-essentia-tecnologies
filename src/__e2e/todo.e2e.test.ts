@@ -17,7 +17,13 @@ describe('Todo E2E', () => {
     await app.close();
   });
 
-  test('POST /todo', async () => {
+  test('POST /', async () => {
+    const response = await client.options('/').send();
+
+    expect(response.status).toBe(200);
+  });
+
+  test('POST /todos', async () => {
     const response = await client.post('/todos').send({
       title: 'Todo 1',
     });
@@ -25,15 +31,16 @@ describe('Todo E2E', () => {
     expect(response.status).toBe(201);
     expect(response.body).toEqual({
       message: 'Todo created successfully',
-      todo: expect.objectContaining({
+      data: expect.objectContaining({
         id: expect.any(String),
         title: 'Todo 1',
+        isCompleted: false,
         createdAt: expect.any(String),
         updatedAt: null,
       }),
     });
 
-    createdTodoId = response.body.todo.id;
+    createdTodoId = response.body.data.id;
   });
 
   describe('GET /todos', () => {
@@ -43,10 +50,11 @@ describe('Todo E2E', () => {
       expect(response.status).toBe(200);
       expect(response.body).toEqual({
         message: 'Todos found successfully',
-        todos: expect.arrayContaining([
+        data: expect.arrayContaining([
           expect.objectContaining({
             id: createdTodoId,
             title: 'Todo 1',
+            isCompleted: false,
             createdAt: expect.any(String),
             updatedAt: null,
           }),
@@ -60,10 +68,11 @@ describe('Todo E2E', () => {
       expect(response.status).toBe(200);
       expect(response.body).toEqual({
         message: 'Todos found successfully',
-        todos: expect.arrayContaining([
+        data: expect.arrayContaining([
           expect.objectContaining({
             id: createdTodoId,
             title: 'Todo 1',
+            isCompleted: false,
             createdAt: expect.any(String),
             updatedAt: null,
           }),
@@ -76,7 +85,7 @@ describe('Todo E2E', () => {
 
       expect(response.status).toBe(200);
       expect(response.body.message).toEqual('Todos found successfully');
-      expect(response.body.todos.length).toBe(0);
+      expect(response.body.data.length).toBe(0);
     });
 
     test('/?page=1&limit=10', async () => {
@@ -84,7 +93,7 @@ describe('Todo E2E', () => {
 
       expect(response.status).toBe(200);
       expect(response.body.message).toEqual('Todos found successfully');
-      expect(response.body.todos.length).toBeGreaterThan(0);
+      expect(response.body.data.length).toBeGreaterThan(0);
     });
 
     test('/todos?page=2&limit=10', async () => {
@@ -92,7 +101,7 @@ describe('Todo E2E', () => {
 
       expect(response.status).toBe(200);
       expect(response.body.message).toEqual('Todos found successfully');
-      expect(response.body.todos.length).toBe(0);
+      expect(response.body.data.length).toBe(0);
     });
   });
 
@@ -102,9 +111,10 @@ describe('Todo E2E', () => {
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
       message: 'Todo found successfully',
-      todo: expect.objectContaining({
+      data: expect.objectContaining({
         id: createdTodoId,
         title: 'Todo 1',
+        isCompleted: false,
         createdAt: expect.any(String),
         updatedAt: null,
       }),
@@ -119,7 +129,7 @@ describe('Todo E2E', () => {
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
       message: 'Todo updated successfully',
-      todo: expect.objectContaining({
+      data: expect.objectContaining({
         id: createdTodoId,
         title: 'Todo 1 updated',
         createdAt: expect.any(String),
