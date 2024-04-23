@@ -1,5 +1,7 @@
 import { DataSourceOptions } from 'typeorm';
 
+import { Todo } from '../../domain/entities/todo.entity';
+
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 export const typeormOptions: DataSourceOptions = (() => {
@@ -11,7 +13,16 @@ export const typeormOptions: DataSourceOptions = (() => {
   const DB_NAME = process.env.DB_NAME || 'postgres';
 
   switch (NODE_ENV) {
-    case 'production':
+    case 'test':
+      return {
+        type: 'sqlite',
+        database: ':memory:',
+        dropSchema: true,
+        synchronize: true,
+        logging: false,
+        entities: [Todo],
+      };
+    default:
       return {
         type: DB_TYPE as any,
         host: DB_HOST,
@@ -21,16 +32,9 @@ export const typeormOptions: DataSourceOptions = (() => {
         database: DB_NAME,
         synchronize: false,
         logging: false,
-        entities: ['dist/**/*.entity.{ts,js}'],
-      };
-    default:
-      return {
-        type: 'sqlite',
-        database: ':memory:',
-        dropSchema: true,
-        synchronize: true,
-        logging: false,
-        entities: ['src/**/*.entity.{ts,js}'],
+        entities: [Todo],
+        migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
+        migrationsTableName: 'custom_migration_table',
       };
   }
 })();
