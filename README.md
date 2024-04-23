@@ -1,5 +1,7 @@
 # desafio-essentia-tecnologies
 
+Frontend [aqui](https://github.com/fernandohenriq/desafio-essentia-tecnologies-angular).
+
 ## Instalação
 
 ```bash
