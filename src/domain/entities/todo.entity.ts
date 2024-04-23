@@ -12,7 +12,8 @@ const createTodoSchema = z.object({
       required_error: 'Todo title is required',
     })
     .min(1, "Todo title can't be empty")
-    .max(50, "Todo title can't be longer than 50 characters"),
+    .max(50, "Todo title can't be longer than 50 characters")
+    .refine((title) => title.trim().length > 0, "Todo title can't be empty"),
   isCompleted: z
     .boolean({
       invalid_type_error: 'Todo isCompleted must be a boolean',
