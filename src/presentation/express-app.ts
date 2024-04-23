@@ -40,9 +40,6 @@ export class ExpressApp {
       res.status(200).send('Hello, World!');
     });
 
-    // Add routes
-    this.app.use(todoRoutes);
-
     // Error handling
     this.app.use((err: any, req: Request, res: Response, next: NextFunction) => {
       if (err instanceof AppError) {
