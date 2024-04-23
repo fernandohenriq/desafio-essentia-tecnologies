@@ -13,6 +13,7 @@ yarn
 Defina as seguintes variáveis de ambiente ou localmente no arquivo `.env`.:
 
 ```bash
+PORT            =
 DB_TYPE         =
 DB_HOST         =
 DB_PORT         =
