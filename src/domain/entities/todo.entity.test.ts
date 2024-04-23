@@ -14,7 +14,7 @@ describe('Todo entity', () => {
   });
 
   test('Should not be able to create a new todo with invalid data', async () => {
-    const error = Todo.create({ title: '' }).error;
+    const error = Todo.create({ title: ' ' }).error;
 
     expect(error).toBeInstanceOf(UnprocessableEntityError);
     expect(error.message).toBe('Invalid todo data');
@@ -45,6 +45,8 @@ describe('Todo entity', () => {
   test('Should not be able to update a todo with invalid data', async () => {
     const todo = Todo.create({ title: 'Todo 1' }).value;
     const error = todo.update({ title: '', isCompleted: true }).error;
+
+    console.log(error.details);
 
     expect(error).toBeInstanceOf(UnprocessableEntityError);
     expect(error.message).toBe('Invalid todo data');

@@ -12,8 +12,7 @@ const createTodoSchema = z.object({
       required_error: 'Todo title is required',
     })
     .min(1, "Todo title can't be empty")
-    .max(50, "Todo title can't be longer than 50 characters")
-    .refine((title) => title.trim().length > 0, "Todo title can't be empty"),
+    .max(50, "Todo title can't be longer than 50 characters"),
   isCompleted: z
     .boolean({
       invalid_type_error: 'Todo isCompleted must be a boolean',
@@ -73,7 +72,9 @@ export class Todo {
   }
 
   static create(props: Todo.CreateTodoProps): Result<Todo, UnprocessableEntityError> {
-    const result = createTodoSchema.safeParse(props);
+    const result = createTodoSchema.safeParse({
+      title: props?.title?.trim(),
+    });
     if (!result.success) {
       const errors = result.error.errors.map((err) => ({
         field: err.path.join('.'),
