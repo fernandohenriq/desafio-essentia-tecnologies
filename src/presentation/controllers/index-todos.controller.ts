@@ -10,10 +10,10 @@ export class IndexTodoController {
       const search: Search<Todo> = extractQuerySearch(req.query);
       const todosResult = await this.findManyTodoUsecase.execute(search);
       if (todosResult.isFailure) throw todosResult.error;
-      const todos = todosResult.value;
+      const data = todosResult.value;
       res.status(200).send({
         message: 'Todos found successfully',
-        todos,
+        data,
       });
     } catch (error: unknown) {
       next(error);

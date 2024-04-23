@@ -11,10 +11,10 @@ export class UpdateTodoController {
       };
       const todoResult = await this.editTodoUsecase.execute(input);
       if (todoResult.isFailure) throw todoResult.error;
-      const todo = todoResult.value;
+      const data = todoResult.value;
       res.status(200).send({
         message: 'Todo updated successfully',
-        todo,
+        data,
       });
     } catch (error: unknown) {
       next(error);

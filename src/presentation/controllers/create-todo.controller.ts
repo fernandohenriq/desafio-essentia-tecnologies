@@ -8,10 +8,10 @@ export class CreateTodoController {
       const input: CreateTodoUseCase.Input = req.body;
       const todoResult = await this.createTodoUsecase.execute(input);
       if (todoResult.isFailure) throw todoResult.error;
-      const todo = todoResult.value;
+      const data = todoResult.value;
       res.status(201).send({
         message: 'Todo created successfully',
-        todo,
+        data,
       });
     } catch (error: unknown) {
       next(error);
