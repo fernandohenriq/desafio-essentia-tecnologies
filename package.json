@@ -1,17 +1,17 @@
 {
   "name": "desafio-essentia-tecnologies",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "build/src/index.js",
   "useror": "Fernando Henrique <fernandohenriqsilva@gmail.com>",
   "license": "MIT",
   "private": true,
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
-    "start": "node dist/src/index.js",
+    "start": "node build/src/index.js",
     "test": "jest --watchAll --config ./jest.config.js --passWithNoTests --logHeapUsage",
     "test:unit": "jest --watchAll --config ./jest.unit.config.js --passWithNoTests --logHeapUsage",
     "test:e2e": "jest --watchAll --config ./jest.e2e.config.js --passWithNoTests --logHeapUsage",
-    "build": "tsc && tsc-alias"
+    "build": "tsc"
   },
   "dependencies": {
     "@types/express": "^4.17.21",
